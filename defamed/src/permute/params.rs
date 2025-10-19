@@ -74,11 +74,11 @@ impl ToMacroPattern for PermutedItem<FunctionParam> {
     fn to_macro_pattern(&self) -> Option<proc_macro2::TokenStream> {
         match self {
             PermutedItem::Positional(FunctionParam { pat, .. }) => {
-                let val = syn::Ident::new(&format!("{}_val", pat.to_token_stream()), pat.span());
+                let val = syn::Ident::new(&format!("{}_val", pat.to_token_stream().to_string().replace("mut ", "")), pat.span());
                 Some(quote! {$#val: expr})
             }
             PermutedItem::Named(FunctionParam { pat, .. }) => {
-                let val = syn::Ident::new(&format!("{}_val", pat.to_token_stream()), pat.span());
+                let val = syn::Ident::new(&format!("{}_val", pat.to_token_stream().to_string().replace("mut ", "")), pat.span());
                 Some(quote! {#pat = $#val: expr})
             }
             PermutedItem::Default(_) => None,
@@ -89,7 +89,7 @@ impl ToMacroPattern for PermutedItem<FunctionParam> {
         match self {
             PermutedItem::Positional(FunctionParam { pat, .. })
             | PermutedItem::Named(FunctionParam { pat, .. }) => {
-                let val = syn::Ident::new(&format!("{}_val", pat.to_token_stream()), pat.span());
+                let val = syn::Ident::new(&format!("{}_val", pat.to_token_stream().to_string().replace("mut ", "")), pat.span());
                 quote! {$#val}
             }
             // PermutedItem::Named(FunctionParam { pat, .. }) =>{
@@ -268,7 +268,7 @@ impl FunctionParam {
                     let meta = attr.meta.clone();
 
                     match meta {
-                        syn::Meta::Path(_) => default_value = ParamAttr::Default,
+                        syn::Meta::Path(p) => { default_value = ParamAttr::Default },
                         syn::Meta::List(l) => {
                             let l_span = l.span();
 
@@ -291,7 +291,7 @@ impl FunctionParam {
                             return Err(e);
                         }
                     }
-
+                    
                     break;
                 }
             }

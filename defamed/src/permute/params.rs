@@ -268,7 +268,7 @@ impl FunctionParam {
                     let meta = attr.meta.clone();
 
                     match meta {
-                        syn::Meta::Path(p) => { default_value = ParamAttr::Default },
+                        syn::Meta::Path(_) => { default_value = ParamAttr::Default },
                         syn::Meta::List(l) => {
                             let l_span = l.span();
 

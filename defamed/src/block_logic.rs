@@ -98,11 +98,11 @@ pub fn item_fn(input: syn::ItemFn, fn_path: Option<syn::Path>) -> ProcOutput {
     let params_inner = params.params.clone();
     let (positional, default) = {
         let partition = params_inner.iter().enumerate().find_map(|(idx, f)| {
-            // if matches!(f.default_value, ParamAttr::Default | ParamAttr::Value(_)) {
+            if matches!(f.default_value, ParamAttr::Default | ParamAttr::Value(_)) {
                 Some(idx)
-            // } else {
-            //     None
-            // }
+             } else {
+                 None
+             }
         });
 
         match partition {

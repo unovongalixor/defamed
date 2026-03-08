@@ -270,14 +270,7 @@ impl FunctionParam {
                     match meta {
                         syn::Meta::Path(_) => { default_value = ParamAttr::Default },
                         syn::Meta::List(l) => {
-                            let l_span = l.span();
-
-                            let first_item = l.tokens.into_iter().next().ok_or(syn::Error::new(
-                                l_span,
-                                "expected at least 1 item in metalist",
-                            ))?;
-
-                            let e: syn::Expr = syn::parse2(first_item.to_token_stream())?;
+                            let e: syn::Expr = syn::parse2(l.tokens.to_token_stream())?;
                             default_value = ParamAttr::Value(e);
                         }
                         syn::Meta::NameValue(nv) => {
